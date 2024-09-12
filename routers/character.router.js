@@ -101,7 +101,7 @@ router.get('/characters/:characterId', async (req, res, next) => {
             },
           });
 
-          return res.status(200).json({ message: character });
+          return res.status(200).json({ character: character });
         }
       }
     }
@@ -115,7 +115,7 @@ router.get('/characters/:characterId', async (req, res, next) => {
       },
     });
 
-    return res.status(200).json({ message: character });
+    return res.status(200).json({ character: character });
   } catch (err) {
     return res.status(500).json({ errorMessage: err.message });
   }
