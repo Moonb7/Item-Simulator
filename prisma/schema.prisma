@@ -35,7 +35,8 @@ model Characters {
 
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
-  inventories Inventories?  
+  inventories Inventories?
+  equipments Equipments?
 
   @@map("Characters")
 }
@@ -52,21 +53,27 @@ model Items {
 model Inventories {
   inventoryId Int @id @default(autoincrement()) @map("inventoryId")
   characterId Int @unique @map("characterId")
-  items Json? @map("items")
+  itemCode Int @unique @map("itemCode")
+  count Int @map("count")
 
   equipments Equipments?
 
   character Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+  item Items @relation(fields: [itemCode], references: [itemCode], onDelete: Cascade)
 
   @@map("Inventories")
 }
 
 model Equipments {
   equipmentId Int @id @default(autoincrement()) @map("equipmentId")
+  characterId Int @unique @map("characterId")
   inventoryId Int @unique @map("inventoryId")
-  items Json? @map("items")
+  itemCode Int @unique @map("itemCode")
+  itemName String @("itemName")
+  itemStat Json? @("itemStat")
 
   inventories Inventories @relation(fields: [inventoryId], references: [inventoryId], onDelete: Cascade)
+  character Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
 
   @@map("Equipments")
 }
