@@ -23,7 +23,7 @@ Item-Simulator의 API서비스를 구현해보는 프로젝트입니다.
 현재 필수기능까지 구현해 보았습니다.
 
 **ERD**
-![alt text](image.png)
+![alt text](ERD.png)
 
 **API 명세서**
 
