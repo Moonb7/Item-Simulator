@@ -6,7 +6,6 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 
 dotenv.config();
-
 const router = express.Router();
 
 // 계정 회원가입 API

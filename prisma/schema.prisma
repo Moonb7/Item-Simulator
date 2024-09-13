@@ -14,66 +14,58 @@ datasource db {
 }
 
 model Users {
-  userId Int @id @default(autoincrement()) @map("userId")
-  id String @unique @map("id")
-  password String @map("password")
-  verifyPassword String @map("verifyPassword")
-  name String @map("name")
+  userId Int @id @default(autoincrement())
+  id String @unique
+  password String
+  verifyPassword String
+  name String
 
   characters Characters[]
-
-  @@map("Users")
 }
 
 model Characters {
-  characterId Int @id @default(autoincrement()) @map("characterId")
-  userId Int @map("userId")
-  characterName String @unique @map("characterName")
-  health Int @default(500) @map("health")
-  power Int @default(100) @map("power")
-  money Int @default(10000) @map("money")
+  characterId Int @id @default(autoincrement())
+  userId Int 
+  characterName String @unique 
+  health Int @default(500) 
+  power Int @default(100) 
+  money Int @default(10000)
 
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   inventories Inventories?
   equipments Equipments?
-
-  @@map("Characters")
 }
 
 model Items {
-  itemCode Int @id @default(autoincrement()) @map("itemCode")
-  itemName String @map("itemName")
-  itemStat Json? @map("itemStat") // 그냥 기타 아이템일 수도 있으니
-  itemPrice Int @map("itemPrice")
+  itemCode Int @id @default(autoincrement())
+  itemName String
+  itemStat Json? // 그냥 기타 아이템일 수도 있으니
+  itemPrice Int
 
-  @@map("Items")
+  Inventories Inventories?
 }
 
 model Inventories {
-  inventoryId Int @id @default(autoincrement()) @map("inventoryId")
-  characterId Int @unique @map("characterId")
-  itemCode Int @unique @map("itemCode")
-  count Int @map("count")
+  inventoryId Int @id @default(autoincrement())
+  characterId Int @unique
+  itemCode Int @unique 
+  count Int 
 
   equipments Equipments?
 
   character Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
   item Items @relation(fields: [itemCode], references: [itemCode], onDelete: Cascade)
-
-  @@map("Inventories")
 }
 
 model Equipments {
-  equipmentId Int @id @default(autoincrement()) @map("equipmentId")
-  characterId Int @unique @map("characterId")
-  inventoryId Int @unique @map("inventoryId")
-  itemCode Int @unique @map("itemCode")
-  itemName String @("itemName")
-  itemStat Json? @("itemStat")
+  equipmentId Int @id @default(autoincrement())
+  characterId Int @unique 
+  inventoryId Int @unique 
+  itemCode Int 
+  itemName String 
+  itemStat Json? 
 
   inventories Inventories @relation(fields: [inventoryId], references: [inventoryId], onDelete: Cascade)
   character Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
-
-  @@map("Equipments")
 }
