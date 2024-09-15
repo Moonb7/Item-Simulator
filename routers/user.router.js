@@ -4,17 +4,17 @@ import { Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import JoiSchema from '../utils/joi/joiSchema.js';
 
 dotenv.config();
+const joiSchema = new JoiSchema();
+
 const router = express.Router();
 
 // 계정 회원가입 API
 router.post('/sign-up', async (req, res, next) => {
   try {
-    const { id, password, verifyPassword, name } = req.body;
-
-    if (!id || !password || !verifyPassword || !name)
-      return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+    const { id, password, verifyPassword, name } = await joiSchema.userSchema().validateAsync(req.body);
 
     // 이미 해당 id로 회원가입했는데 여부확인
     const isExistUser = await prisma.users.findFirst({
@@ -26,16 +26,7 @@ router.post('/sign-up', async (req, res, next) => {
       return res.status(409).json({ message: '이미 존재하는 아이디입니다.' });
     }
 
-    if (password !== verifyPassword)
-      return res.status(400).json({ message: '비밀번호와 비밀번호확인이 다릅니다.' });
-
-    const passwordPattern = /^.{6,}$/;
-    if (!passwordPattern.test(password))
-      return res.status(400).json({ message: '비밀번호가 6글자 미만입니다.' });
-
-    const idPattern = /^[a-z0-9]+$/;
-    if (!idPattern.test(id))
-      return res.status(400).json({ message: '아이디는 영문 소문자와 숫자 조합으로만 생성됩니다.' });
+    if (password !== verifyPassword) return res.status(400).json({ message: '비밀번호와 비밀번호확인이 다릅니다.' });
 
     // 비밀번호 해싱 암호화
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -69,16 +60,14 @@ router.post('/sign-up', async (req, res, next) => {
 
     return res.status(201).json({ data: user });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 
 // 계정 로그인 API - JWT 액세스 토큰 발행
 router.post('/sign-in', async (req, res, next) => {
   try {
-    const { id, password } = req.body;
-
-    if (!id || !password) return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+    const { id, password } = await joiSchema.userSchema().validateAsync(req.body);
 
     const user = await prisma.users.findFirst({ where: { id } });
 
@@ -91,7 +80,7 @@ router.post('/sign-in', async (req, res, next) => {
     res.header('authorization', `Bearer ${token}`);
     return res.status(200).json({ message: '로그인에 성공하였습니다.' });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 

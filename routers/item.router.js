@@ -1,15 +1,14 @@
 import express from 'express';
 import { prisma } from '../utils/prisma/index.js';
+import JoiSchema from '../utils/joi/joiSchema.js';
 
 const router = express.Router();
+const joiSchema = new JoiSchema();
 
 // 아이템 생성 API
 router.post('/items', async (req, res, next) => {
   try {
-    const { itemCode, itemName, itemStat, itemPrice } = req.body;
-
-    if (!itemCode || !itemName || !itemStat || !itemPrice)
-      return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+    const { itemCode, itemName, health, power, itemPrice } = await joiSchema.itemSchema().validateAsync(req.body);
 
     const isExistItem = await prisma.items.findFirst({
       where: {
@@ -26,25 +25,24 @@ router.post('/items', async (req, res, next) => {
       data: {
         itemCode,
         itemName,
-        itemStat,
+        health,
+        power,
         itemPrice,
       },
     });
 
     return res.status(201).json({ item: item });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 
 // 아이템 수정 API
 router.patch('/items/:itemCode', async (req, res, next) => {
   try {
-    const { itemCode } = req.params;
-    const { itemName, itemStat } = req.body;
+    const { itemCode } = await joiSchema.itemSchema().validateAsync(req.params);
 
-    if (!itemCode || !itemName || !itemStat)
-      return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+    const { itemName, health, power } = await joiSchema.itemSchema().validateAsync(req.body);
 
     const item = await prisma.items.findFirst({
       where: { itemCode: +itemCode },
@@ -54,7 +52,8 @@ router.patch('/items/:itemCode', async (req, res, next) => {
     const renewalItem = await prisma.items.update({
       data: {
         itemName,
-        itemStat,
+        health,
+        power,
       },
       where: {
         itemCode: +itemCode,
@@ -63,7 +62,7 @@ router.patch('/items/:itemCode', async (req, res, next) => {
 
     return res.status(200).json({ message: '아이템 정보에 성공허였습니다.', renewalItem: renewalItem });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 

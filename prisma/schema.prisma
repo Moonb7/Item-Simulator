@@ -33,39 +33,33 @@ model Characters {
 
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
-  inventories Inventories?
-  equipments Equipments?
-}
-
-model Items {
-  itemCode Int @id @default(autoincrement())
-  itemName String
-  itemStat Json? // 그냥 기타 아이템일 수도 있으니
-  itemPrice Int
-
-  Inventories Inventories?
+  inventories Inventories[]
+  equipments Equipments[]
 }
 
 model Inventories {
   inventoryId Int @id @default(autoincrement())
-  characterId Int @unique
-  itemCode Int @unique 
+  characterId Int 
+  itemCode Int  
   count Int 
 
-  equipments Equipments?
-
   character Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
-  item Items @relation(fields: [itemCode], references: [itemCode], onDelete: Cascade)
 }
 
 model Equipments {
   equipmentId Int @id @default(autoincrement())
   characterId Int @unique 
-  inventoryId Int @unique 
-  itemCode Int 
-  itemName String 
-  itemStat Json? 
+  itemCode Int
 
-  inventories Inventories @relation(fields: [inventoryId], references: [inventoryId], onDelete: Cascade)
   character Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+}
+
+
+// 그냥 약간 테이블의 관계보단 아이템들의 내용을 조회하기위해 아이템 정보들이 답긴 데이블
+model Items {
+  itemCode Int @id @default(autoincrement())
+  itemName String
+  health Int? // 그냥 기타 아이템일 수도 있으니
+  power Int? // 그냥 기타 아이템일 수도 있으니
+  itemPrice Int
 }
