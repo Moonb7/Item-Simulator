@@ -75,7 +75,7 @@ router.post('/sign-in', async (req, res, next) => {
     const passwordCheck = await bcrypt.compare(password, user.password);
     if (!passwordCheck) return res.status(401).json({ message: '비밀번호가 일치하지 않습니다.' });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, { expiresIn: '2h' }); // expiresIn 옵션으로 토큰 만료기한 설정
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, { expiresIn: '12h' }); // expiresIn 옵션으로 토큰 만료기한 설정
 
     res.header('authorization', `Bearer ${token}`);
     return res.status(200).json({ message: '로그인에 성공하였습니다.' });

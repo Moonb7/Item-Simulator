@@ -81,7 +81,7 @@ router.get('/items', async (req, res, next) => {
 
     return res.status(200).json({ items: items });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 
@@ -96,7 +96,7 @@ router.get('/items/:itemCode', async (req, res, next) => {
 
     return res.status(200).json({ item: item });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 

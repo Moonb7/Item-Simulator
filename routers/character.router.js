@@ -11,8 +11,7 @@ router.post('/characters', authMiddleware, async (req, res, next) => {
     const { characterName } = req.body;
     const { userId } = req.user;
 
-    if (!characterName || !userId)
-      return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+    if (!characterName || !userId) return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
 
     const isExistCharacter = await prisma.characters.findFirst({
       where: {
@@ -31,7 +30,7 @@ router.post('/characters', authMiddleware, async (req, res, next) => {
 
     return res.status(201).json({ characterId: character.characterId });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 
@@ -41,8 +40,7 @@ router.delete('/characters/:characterId', authMiddleware, async (req, res, next)
     const { characterId } = req.params;
     const { userId } = req.user;
 
-    if (!characterId || !userId)
-      return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
+    if (!characterId || !userId) return res.status(400).json({ errorMessage: '데이터 형식이 올바르지 않습니다.' });
 
     const character = await prisma.characters.findFirst({
       where: {
@@ -60,7 +58,7 @@ router.delete('/characters/:characterId', authMiddleware, async (req, res, next)
 
     return res.status(200).json({ message: `${characterId}번 캐릭터가 삭제 되었습니다.` });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 
@@ -117,7 +115,7 @@ router.get('/characters/:characterId', async (req, res, next) => {
 
     return res.status(200).json({ character: character });
   } catch (err) {
-    return res.status(500).json({ errorMessage: err.message });
+    next(err);
   }
 });
 

@@ -48,7 +48,7 @@ model Inventories {
 
 model Equipments {
   equipmentId Int @id @default(autoincrement())
-  characterId Int @unique 
+  characterId Int  
   itemCode Int
 
   character Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)

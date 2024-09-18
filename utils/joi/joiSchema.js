@@ -32,6 +32,20 @@ export default class schema {
     });
     return inventorySchema;
   }
+
+  characterIdSchema() {
+    const characterIdSchema = Joi.object({
+      characterId: Joi.number().required(),
+    });
+    return characterIdSchema;
+  }
+
+  itemCodeSchema() {
+    const itemCodeSchema = Joi.object({
+      itemCode: Joi.number().required(),
+    });
+    return itemCodeSchema;
+  }
 }
 
 // 예시

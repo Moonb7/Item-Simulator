@@ -3,6 +3,8 @@ import UserRouter from './routers/user.router.js';
 import CharacterRouter from './routers/character.router.js';
 import ItemRouter from './routers/item.router.js';
 import InventoryRouter from './routers/inventory.router.js';
+import EquipmentRouter from './routers/equipment.router.js';
+import gameRouter from './routers/game.router.js';
 import dotenv from 'dotenv';
 import errorHandlingMiddleware from './middlewares/errorHandling.middleware.js';
 
@@ -13,7 +15,7 @@ const PORT = 3018;
 
 app.use(express.json()); // req.body를 Json형태로 받기위해
 
-app.use('/api', [UserRouter, CharacterRouter, ItemRouter, InventoryRouter]);
+app.use('/api', [UserRouter, CharacterRouter, ItemRouter, InventoryRouter, EquipmentRouter, gameRouter]);
 
 app.use(errorHandlingMiddleware);
 
